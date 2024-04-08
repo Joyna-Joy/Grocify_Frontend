@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grocify_frontend/Welcome_Page.dart';
 
 class Splash_Screen extends StatefulWidget {
   @override
@@ -22,10 +23,10 @@ class _Splash_ScreenState extends State<Splash_Screen> with SingleTickerProvider
     _animation = Tween<double>(begin: 0, end: 1).animate(_animationController); // Tween to control opacity from 0 to 1
     _animationController.forward(); // Start the animation
 
-    // Timer(Duration(seconds:2), () => Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => WelcomePage()),
-    // ));
+    Timer(Duration(seconds:2), () => Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => WelcomePage()),
+    ));
   }
 
   @override
