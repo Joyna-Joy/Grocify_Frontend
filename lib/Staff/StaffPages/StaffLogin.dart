@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grocify_frontend/Admin/AdminPages/AdminLogin.dart';
 import 'package:grocify_frontend/Customer/CustomerPages/Login_Page.dart';
 import 'package:grocify_frontend/Staff/StaffPages/StaffRegistration.dart';
 
@@ -57,10 +58,10 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
   }
 
   void _navigateToAdminScreen() {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => AdminLoginPage()), //Add Admin Page
-    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AdminLoginPage()), //Add Admin Page
+    );
   }
   void _navigateToLoginScreen() {
     Navigator.push(

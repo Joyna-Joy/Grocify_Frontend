@@ -1,22 +1,21 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:grocify_frontend/Admin/AdminPages/AdminLogin.dart';
-import 'package:grocify_frontend/Customer/CustomerPages/Register_Page.dart';
-import 'package:grocify_frontend/Customer/CustomerPages/dashboard.dart';
+import 'package:grocify_frontend/Admin/AdminPages/AdminPanel.dart';
+import 'package:grocify_frontend/Customer/CustomerPages/Login_Page.dart';
 import 'package:grocify_frontend/Staff/StaffPages/StaffLogin.dart';
 
 
 enum Menu { itemOne, itemTwo }
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class AdminLoginPage extends StatefulWidget {
+  const AdminLoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<AdminLoginPage> createState() => _AdminLoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _AdminLoginPageState extends State<AdminLoginPage> {
   bool _isButtonClicked = false;
   bool _isPasswordVisible = false;
   bool _rememberMe = false;
@@ -47,21 +46,36 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    // Simulate a loading process
-    Timer(Duration(seconds: 1), () {
-      // Replace this with your login logic
-      // For demonstration, it navigates to the CategoryMenu screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => BottomNavigationPage()),
+    // Check if the entered credentials match the admin username and password
+    if (email == 'admin' && password == 'admin') {
+      // Simulate a loading process
+      Timer(Duration(seconds: 1), () {
+        // Navigate to the CategoryMenu screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AdminScreen()),
+        );
+      });
+    } else {
+      // Show error message for invalid credentials
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Invalid username or password'),
+          backgroundColor: Colors.red,
+        ),
       );
-    });
+
+      setState(() {
+        _isButtonClicked = false;
+      });
+    }
   }
 
-  void _navigateToAdminScreen() {
+
+  void _navigateToLoginScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AdminLoginPage()), //Add Admin Page
+      MaterialPageRoute(builder: (context) => LoginPage()), //Add Admin Page
     );
   }
   void _navigateToStaffScreen() {
@@ -82,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
               offset: Offset(0, 40),
               onSelected: (Menu item) {
                 if (item == Menu.itemOne) {
-                  _navigateToAdminScreen();
+                  _navigateToLoginScreen();
                 }
                 else{
                   _navigateToStaffScreen();
@@ -91,11 +105,11 @@ class _LoginPageState extends State<LoginPage> {
               itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
                 const PopupMenuItem<Menu>(
                   value: Menu.itemOne,
-                  child: Text('Admin'),
+                  child: Text('Customer Login'),
                 ),
                 const PopupMenuItem<Menu>(
                   value: Menu.itemTwo,
-                  child: Text('Staff'),
+                  child: Text('Staff Login'),
                 )
               ]),
         ],
@@ -103,9 +117,9 @@ class _LoginPageState extends State<LoginPage> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.orange.shade900,
-                Colors.orange.shade800,
-                Colors.orange.shade400
+                Color(0xFF540D35),
+                Color(0xB88A1556),
+                Color(0xAFD02788),
               ],
             ),
           ),
@@ -117,9 +131,9 @@ class _LoginPageState extends State<LoginPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             colors: [
-              Colors.orange.shade900,
-              Colors.orange.shade800,
-              Colors.orange.shade400
+              Color(0xFF540D35),
+              Color(0xB88A1556),
+              Color(0xAFD02788),
             ],
           ),
         ),
@@ -165,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
-                                  color: Colors.orangeAccent,
+                                  color: Color(0xAFD02788),
                                   blurRadius: 80,
                                   offset: Offset(10, 10)),
                             ],
@@ -177,17 +191,19 @@ class _LoginPageState extends State<LoginPage> {
                                 decoration: BoxDecoration(
                                   border: Border(
                                     bottom: BorderSide(
-                                        color: Colors.orangeAccent.shade200),
+                                      color: Color(0xAFD02788),
+                                    ),
                                   ),
                                 ),
                                 child: TextField(
                                   controller: _emailController,
                                   decoration: InputDecoration(
                                       icon: Icon(Icons.email_outlined,
-                                          color: Colors.deepOrange),
+                                          color: Color(0xFF540D35)),
                                       hintText: "Email or Phone number",
                                       hintStyle: TextStyle(
-                                          color: Colors.orange),
+                                        color: Color(0xAFC03683),
+                                      ),
                                       border: InputBorder.none),
                                 ),
                               ),
@@ -199,17 +215,17 @@ class _LoginPageState extends State<LoginPage> {
                                   decoration: InputDecoration(
                                     icon: Icon(
                                       Icons.lock_outline_rounded,
-                                      color: Colors.deepOrange,
+                                      color: Color(0xFF540D35),
                                     ),
                                     hintText: "Password",
-                                    hintStyle: TextStyle(color: Colors.orange),
+                                    hintStyle: TextStyle(color: Color(0xAFD02788),),
                                     border: InputBorder.none,
                                     suffixIcon: IconButton(
                                       icon: Icon(
                                         _isPasswordVisible
                                             ? Icons.visibility_off
                                             : Icons.visibility,
-                                        color: Colors.deepOrange,
+                                        color: Color(0xFF540D35),
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -240,7 +256,7 @@ class _LoginPageState extends State<LoginPage> {
                           controlAffinity:
                           ListTileControlAffinity.leading,
                           dense: true,
-                          activeColor: Colors.deepOrange,
+                          activeColor: Color(0xFF540D35),
                           contentPadding: const EdgeInsets.all(0),
                         ),
                         SizedBox(height: 35),
@@ -255,7 +271,7 @@ class _LoginPageState extends State<LoginPage> {
                               decoration: BoxDecoration(
                                 color: _isButtonClicked
                                     ? Colors.green
-                                    : Colors.orange.shade900,
+                                    : Color(0xFF540D35),
                                 borderRadius: BorderRadius.circular(
                                     _isButtonClicked ? 10 : 50),
                               ),
@@ -272,26 +288,6 @@ class _LoginPageState extends State<LoginPage> {
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
                                   ))),
-                        ),
-                        SizedBox(height: 30),
-                        Container(
-                          alignment: Alignment.center,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          RegistrationPage()));
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.deepOrange),
-                            child: Text(
-                              "Don't have an account? Sign Up",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
                         ),
                         SizedBox(height: 50),
                       ],

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:grocify_frontend/Customer/CustomerModels/CategoryModel.dart';
+import 'package:grocify_frontend/Customer/CustomerPages/ProductDetails.dart';
 import 'package:grocify_frontend/Customer/CustomerServices/CategoryServices.dart';
 
 class CategoryMenu extends StatefulWidget {
@@ -15,6 +16,12 @@ class _CategoryMenuState extends State<CategoryMenu> {
   late PageController _pageController;
   int _currentPage = 0;
   Timer? _timer;
+
+  List<String> imageUrls = [
+    'assets/card1.png', // Local image asset path
+    'assets/card2.png', // Local image asset path
+    'assets/card3.png', // Local image asset path
+  ];
 
   @override
   void initState() {
@@ -31,15 +38,15 @@ class _CategoryMenuState extends State<CategoryMenu> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 4), (timer) {
-      if (_currentPage < 3) {
+    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      if (_currentPage < imageUrls.length - 1) {
         _currentPage++;
       } else {
         _currentPage = 0;
       }
       _pageController.animateToPage(
         _currentPage,
-        duration: Duration(milliseconds: 500),
+        duration: Duration(milliseconds: 400),
         curve: Curves.easeIn,
       );
     });
@@ -81,6 +88,25 @@ class _CategoryMenuState extends State<CategoryMenu> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(
+                height: 200,
+                width: 350,// Adjust the height as needed
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: imageUrls.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+             // Adjust the height of the card as needed
+                      child: Card(
+                        child: Image.asset(
+                          imageUrls[index],
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
               Container(
                 padding: EdgeInsets.all(8),
                 child: FutureBuilder<List<Category>>(
@@ -127,9 +153,9 @@ class CategoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => ProductListPage()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ProductScreen(categoryId: '660af96c562776d868d9621f',)));
       },
       child: Container(
         decoration: BoxDecoration(
@@ -199,5 +225,3 @@ class CategoryItem extends StatelessWidget {
     );
   }
 }
-
-

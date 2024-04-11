@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocify_frontend/Customer/CustomerPages/CartPage.dart';
 
 import 'package:grocify_frontend/Customer/CustomerPages/Category_Page.dart';
 
@@ -53,15 +54,6 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
 }
 
 
-
-class CartPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Cart Page'),
-    );
-  }
-}
 
 
 class AccountPage extends StatelessWidget {

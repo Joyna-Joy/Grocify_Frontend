@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.2.0
+  scoped_model: ^2.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -63,6 +64,9 @@ flutter:
   assets:
     - assets/Grocery_Logo.png
     - assets/WelcomePage.png
+    - assets/card1.png
+    - assets/card2.png
+    - assets/card3.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
