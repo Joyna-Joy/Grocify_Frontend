@@ -1,63 +1,23 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:grocify_frontend/Admin/AdminServices/Services.dart';
+import 'package:grocify_frontend/api_constants.dart';
 
-class Product {
-  final String id;
-  final String name;
-  final String description;
-  final List<String> images;
-  final int quantity;
-  final double price;
-  final String categoryId;
-
-  Product({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.images,
-    required this.quantity,
-    required this.price,
-    required this.categoryId,
-  });
-
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      id: json['_id'],
-      name: json['name'],
-      description: json['description'],
-      images: List<String>.from(json['images']),
-      quantity: json['quantity'],
-      price: json['price'].toDouble(),
-      categoryId: json['category_id'],
-    );
-  }
-}
-
-
-class ProductViewScreen extends StatelessWidget {
-  Future<List<Product>> getProducts() async {
-    final response = await http.get(Uri.parse('http://localhost:3000/api/admin/getProduct'));
-    if (response.statusCode == 200) {
-      Iterable list = jsonDecode(response.body);
-      return List<Product>.from(list.map((model) => Product.fromJson(model)));
-    } else {
-      throw Exception('Failed to load products');
-    }
-  }
-
+class ProductListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color(0xFF540D35),
-                  Color(0xB88A1556),
-                  Color(0xAFD02788),
-                ],)
+            gradient: LinearGradient(
+              colors: [
+                Color(0xFF540D35),
+                Color(0xB88A1556),
+                Color(0xAFD02788),
+              ],
+            ),
           ),
         ),
         leading: IconButton(
@@ -69,64 +29,211 @@ class ProductViewScreen extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.list,color:  Colors.white,),
+            Icon(Icons.list, color: Colors.white,),
             SizedBox(
               width: 10,
             ),
-            Text('Product List ',style: TextStyle(color:  Colors.white,fontWeight: FontWeight.bold),),
+            Text('Product List ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           ],
         ),
       ),
-      body: FutureBuilder<List<Product>>(
-        future: getProducts(),
+      body: FutureBuilder<List<AdminViewProduct>>(
+        future: AdminViewProductService.getAllProducts(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else {
-            List<Product> products = snapshot.data!;
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+            return Center(child: Text('No products available'));
+          } else if (snapshot.hasData) {
             return ListView.builder(
-              itemCount: products.length,
+              itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                Product product = products[index];
-                return ListTile(
-                  title: Text(product.name),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Category: ${product.categoryId}', // Changed to categoryId
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text('Description: ${product.description}'),
-                      Text('Quantity: ${product.quantity}'),
-                    ],
-                  ),
-                  trailing: Text('\$${product.price.toStringAsFixed(2)}'),
-                  leading: SizedBox(
-                    width: 80,
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: Image.network(
-                        product.images.isNotEmpty ? product.images.first : 'https://via.placeholder.com/150',
-                        fit: BoxFit.cover,
-                      ),
+                final product = snapshot.data![index];
+                return Card(
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(product.images),
+                      radius: 30,
                     ),
+                    title: Text(product.productName),
+                    subtitle: Text('${product.title} \n ₹${product.price}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.purple),
+                          onPressed: () {
+                            _showUpdateDialog(context, product);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            _showConfirmationDialog(context, product.id);
+                          },
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      // Navigate to product details page or perform any other action
+                    },
                   ),
-                  onTap: () {
-                    // Handle product tap
-                  },
                 );
               },
             );
+          } else {
+            return Center(child: Text('Unknown error occurred'));
           }
         },
       ),
+    );
+  }
+
+  Future<void> _showUpdateDialog(BuildContext context, AdminViewProduct product) async {
+    // Define controller for text fields
+    TextEditingController titleController = TextEditingController(text: product.title);
+    TextEditingController priceController = TextEditingController(text: product.price);
+
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Update Product'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(labelText: 'Title'),
+                ),
+                TextField(
+                  controller: priceController,
+                  decoration: InputDecoration(labelText: 'Price'),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Update'),
+              onPressed: () async {
+                try {
+                  // Prepare updated product data
+                  Map<String, dynamic> updatedData = {
+                    'title': titleController.text,
+                    'price': double.parse(priceController.text),
+                    // Add other fields if necessary
+                  };
+
+                  await AdminProductService.updateProduct(product.id, updatedData);
+                  Navigator.of(context).pop();
+                } catch (error) {
+                  // Handle error
+                  print('Error updating product: $error');
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showConfirmationDialog(BuildContext context, String productId) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure you want to delete this product?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () async {
+                try {
+                  await AdminProductService.deleteProduct(productId);
+                  Navigator.of(context).pop();
+                } catch (error) {
+                  // Handle error
+                  print('Error deleting product: $error');
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class AdminViewProductService {
+  static Future<List<AdminViewProduct>> getAllProducts() async {
+    final Uri uri = Uri.parse('${ApiConstants.baseUrl}/api/admin/getProduct');
+
+    try {
+      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((item) => AdminViewProduct.fromJson(item)).toList();
+      } else {
+        throw Exception('Failed to load products'); // Provide specific error message
+      }
+    } catch (error) {
+      print(error);
+      throw Exception('Network error: $error');
+      // Provide specific error message
+    }
+  }
+}
+
+class AdminViewProduct {
+  final String id;
+  final String productName;
+  final String title;
+  final String images;
+  final String price;
+
+  AdminViewProduct({
+    required this.id,
+    required this.productName,
+    required this.title,
+    required this.images,
+    required this.price,
+  });
+
+  factory AdminViewProduct.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      throw Exception('Failed to parse product. JSON is null.');
+    }
+    return AdminViewProduct(
+      id: json['_id'] ?? '', // Ensure _id is treated as String
+      productName: json['product_name'] ?? '',
+      title: json['title'] ?? '',
+      images: json['images'] ?? '',
+      price: json['price'].toString() ?? '',
     );
   }
 }

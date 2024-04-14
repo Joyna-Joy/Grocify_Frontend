@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:grocify_frontend/Admin/AdminPages/AddProduct.dart';
+import 'package:grocify_frontend/Admin/AdminPages/ViewCategory.dart';
 import 'package:grocify_frontend/Admin/AdminPages/CategoryAdd.dart';
 import 'package:grocify_frontend/Admin/AdminPages/ViewProductPage.dart';
 import 'package:grocify_frontend/Admin/AdminPages/ViewStaff.dart';
-import 'package:grocify_frontend/Customer/CustomerPages/Category_Page.dart';
+import 'package:grocify_frontend/RecipeForm/FormPages/RecipeProductAdd.dart';
 
 
 class AdminScreen extends StatelessWidget {
@@ -50,7 +51,7 @@ class AdminScreen extends StatelessWidget {
               icon: Icons.add_shopping_cart_outlined,
               text: 'Add Product',
               onTap: () {
-             // Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductPage()));
+             Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen()));
               },
               color: Colors.blue, // Set background color
             ),
@@ -71,7 +72,7 @@ class AdminScreen extends StatelessWidget {
               icon: Icons.list,
               text: 'View Products',
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ProductViewScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ProductListView()));
               },
               color: Colors.green, // Set background color
             ),
@@ -91,7 +92,7 @@ class AdminScreen extends StatelessWidget {
               icon: Icons.category_outlined,
               text: 'View Category',
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryMenu()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ViewCategoryMenu()));
               },
               color: Colors.deepPurple.shade400
             ),

@@ -1,28 +1,21 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocify_frontend/Customer/CustomerModels/CategoryModel.dart';
-import 'package:grocify_frontend/Customer/CustomerPages/ProductDetails.dart';
+import 'package:grocify_frontend/Customer/CustomerPages/Category_Page.dart';
 import 'package:grocify_frontend/Customer/CustomerServices/CategoryServices.dart';
 
-class CategoryMenu extends StatefulWidget {
-  const CategoryMenu({Key? key}) : super(key: key);
+class ViewCategoryMenu extends StatefulWidget {
+  const ViewCategoryMenu({Key? key}) : super(key: key);
 
   @override
-  State<CategoryMenu> createState() => _CategoryMenuState();
+  State<ViewCategoryMenu> createState() => _ViewCategoryMenuState();
 }
 
-class _CategoryMenuState extends State<CategoryMenu> {
+class _ViewCategoryMenuState extends State<ViewCategoryMenu> {
   late Future<List<Category>> data;
   late PageController _pageController;
   int _currentPage = 0;
   Timer? _timer;
-
-  List<String> imageUrls = [
-    'assets/card1.png', // Local image asset path
-    'assets/card2.png', // Local image asset path
-    'assets/card3.png', // Local image asset path
-  ];
 
   @override
   void initState() {
@@ -39,15 +32,15 @@ class _CategoryMenuState extends State<CategoryMenu> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
-      if (_currentPage < imageUrls.length - 1) {
+    _timer = Timer.periodic(Duration(seconds: 4), (timer) {
+      if (_currentPage < 3) {
         _currentPage++;
       } else {
         _currentPage = 0;
       }
       _pageController.animateToPage(
         _currentPage,
-        duration: Duration(milliseconds: 400),
+        duration: Duration(milliseconds: 500),
         curve: Curves.easeIn,
       );
     });
@@ -64,9 +57,9 @@ class _CategoryMenuState extends State<CategoryMenu> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.orange.shade900,
-                  Colors.orange.shade800,
-                  Colors.orange.shade400
+                  Color(0xFF540D35),
+                  Color(0xB88A1556),
+                  Color(0xAFD02788),
                 ],
               ),
             ),
@@ -77,55 +70,18 @@ class _CategoryMenuState extends State<CategoryMenu> {
               Navigator.pop(context);
             },
           ),
-          // title: Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Icon(Icons.category_outlined, color: Colors.white,),
-          //     SizedBox(width: 10),
-          //     Text('Discover Categories', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-          //   ],
-          // ),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.category_outlined, color: Colors.white,),
+              SizedBox(width: 10),
+              Text(' Categories List', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+            ],
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Offer Zone 😍',
-                  style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
-                ),
-              ),
-              SizedBox(height: 15),
-              SizedBox(
-                height: 150,
-                width: 350,// Adjust the height as needed
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: imageUrls.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-             // Adjust the height of the card as needed
-                      child: Card(
-                        child: Image.asset(
-                          imageUrls[index],
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Categories 😋',
-                  style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25),
-                ),
-              ),
-              SizedBox(height: 15),
               Container(
                 padding: EdgeInsets.all(8),
                 child: FutureBuilder<List<Category>>(
@@ -149,7 +105,7 @@ class _CategoryMenuState extends State<CategoryMenu> {
                       );
                     } else {
                       return Center(
-                        child: Text("No data available or Server Is Not Running"),
+                        child: Text("No data available"),
                       );
                     }
                   },
@@ -163,22 +119,15 @@ class _CategoryMenuState extends State<CategoryMenu> {
   }
 }
 
-class CategoryItem extends StatelessWidget {
+class ViewCategoryItem extends StatelessWidget {
   final Category category;
 
-  const CategoryItem({Key? key, required this.category}) : super(key: key);
+  const ViewCategoryItem({Key? key, required this.category}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          // MaterialPageRoute(builder: (context) => ProductScreen(categoryId: '660af72d562776d868d9621c',)));
-          MaterialPageRoute(builder: (context) => ProductScreen(categoryIds: ['660af72d562776d868d9621c', '660af96c562776d868d9621f',
-            '660afa3c562776d868d96221','660afd71562776d868d96225','660afe21562776d868d96229','660b01c8562776d868d96231','660b0478562776d868d96235',
-          '660b0523562776d868d96239','660b069d562776d868d9623d','660b0713562776d868d96240','660b972c1a8c2b50c5f4a7c4','660b9b0e1a8c2b50c5f4a7ca'])));
-      },
+      onTap: () {},
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -247,3 +196,5 @@ class CategoryItem extends StatelessWidget {
     );
   }
 }
+
+

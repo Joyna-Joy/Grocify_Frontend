@@ -1,100 +1,74 @@
 import 'package:flutter/material.dart';
-import 'package:grocify_frontend/Customer/CustomerModels/CartModel.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:grocify_frontend/Admin/AdminModel/AdminModel.dart';
+import 'package:grocify_frontend/Customer/CustomerModels/ProductModel.dart';
 
 class CartPage extends StatefulWidget {
+  final AdminProduct product;
+  final int quantity;
+
+  CartPage({required this.product, required this.quantity});
+
   @override
-  State<StatefulWidget> createState() {
-    return _CartPageState();
-  }
+  _CartPageState createState() => _CartPageState();
 }
 
 class _CartPageState extends State<CartPage> {
+  late double totalAmount;
+
+  @override
+  void initState() {
+    super.initState();
+    calculateTotalAmount();
+  }
+
+  void calculateTotalAmount() {
+    double price = double.parse(widget.product.price);
+    double discountedPrice = widget.product.discounts.isNotEmpty
+        ? double.parse(widget.product.price) -
+        (double.parse(widget.product.price) *
+            (widget.product.discounts.first.value / 100))
+        : 0;
+
+    totalAmount = discountedPrice > 0 ? discountedPrice : price;
+    totalAmount *= widget.quantity;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.indigo,
-        title: Text("Cart"),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => ScopedModel.of<CartModel>(context).clearCart(),
-            child: Text(
-              "Clear",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
+        title: Text('Cart'),
       ),
-      body: ScopedModel.of<CartModel>(context, rebuildOnChange: true).cart.cartItems.length == 0
-          ? Center(
-        child: Text("No items in Cart"),
-      )
-          : Container(
-        padding: EdgeInsets.all(8.0),
+      body: Padding(
+        padding: EdgeInsets.all(20),
         child: Column(
-          children: <Widget>[
-            Expanded(
-              child: ListView.builder(
-                itemCount: ScopedModel.of<CartModel>(context, rebuildOnChange: true).total,
-                itemBuilder: (context, index) {
-                  return ScopedModelDescendant<CartModel>(
-                    builder: (context, child, model) {
-                      return ListTile(
-                        title: Text(model.cart.cartItems[index].title),
-                        subtitle: Text(
-                          model.cart.cartItems[index].quantity.toString() +
-                              " x " +
-                              model.cart.cartItems[index].price.toString() +
-                              " = " +
-                              (model.cart.cartItems[index].quantity * model.cart.cartItems[index].price).toString(),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.add),
-                              onPressed: () {
-                                model.updateProduct(
-                                  model.cart.cartItems[index],
-                                  model.cart.cartItems[index].quantity + 1,
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.remove),
-                              onPressed: () {
-                                model.updateProduct(
-                                  model.cart.cartItems[index],
-                                  model.cart.cartItems[index].quantity - 1,
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Product: ${widget.product.productName}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Container(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                "Total: \$ " +
-                    ScopedModel.of<CartModel>(context, rebuildOnChange: true).totalCartValue.toString() +
-                    "",
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-              ),
+            SizedBox(height: 10),
+            Text(
+              'Quantity: ${widget.quantity}',
+              style: TextStyle(fontSize: 18),
             ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.yellow[900]!),
-                ),
-                onPressed: () {},
-                child: Text("BUY NOW"),
+            SizedBox(height: 10),
+            Text(
+              'Total Amount: ₹$totalAmount',
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Place order logic goes here
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Order placed successfully')),
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text('Place Order'),
               ),
             ),
           ],
