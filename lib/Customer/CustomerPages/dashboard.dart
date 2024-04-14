@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:grocify_frontend/Customer/CustomerPages/AccountPage.dart';
+import 'package:grocify_frontend/Customer/CustomerPages/CartPage.dart';
 
 import 'package:grocify_frontend/Customer/CustomerPages/Category_Page.dart';
 
@@ -12,8 +14,9 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
 
   static List<Widget> _widgetOptions = <Widget>[
     CategoryMenu(),
-    CartPage(),
     AccountPage(),
+    AccountScreen(),
+
   ];
 
   void _onItemTapped(int index) {
@@ -54,15 +57,6 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
 
 
 
-class CartPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Cart Page'),
-    );
-  }
-}
-
 
 class AccountPage extends StatelessWidget {
   @override
@@ -72,3 +66,4 @@ class AccountPage extends StatelessWidget {
     );
   }
 }
+
