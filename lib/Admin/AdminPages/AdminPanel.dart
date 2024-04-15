@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocify_frontend/Admin/AdminPages/AddProduct.dart';
+import 'package:grocify_frontend/Admin/AdminPages/DeleteTips.dart';
 import 'package:grocify_frontend/Admin/AdminPages/ViewCategory.dart';
 import 'package:grocify_frontend/Admin/AdminPages/CategoryAdd.dart';
 import 'package:grocify_frontend/Admin/AdminPages/ViewProductPage.dart';
@@ -51,7 +52,7 @@ class AdminScreen extends StatelessWidget {
               icon: Icons.add_shopping_cart_outlined,
               text: 'Add Product',
               onTap: () {
-             Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen()));
+             Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductPage()));
               },
               color: Colors.blue, // Set background color
             ),
@@ -111,6 +112,33 @@ class AdminScreen extends StatelessWidget {
               text: 'View Staff',
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => StaffViewPage()));
+              },
+              color: Colors.green.shade900, // Set background color
+            ),
+            SizedBox(height: 20.0),
+            buildListTile(
+              icon: Icons.tips_and_updates,
+              text: 'Delete Tips & Tricks ',
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => TipsDeletePage()));
+              },
+              color: Color(0xffe3582b), // Set background color
+            ),
+            SizedBox(height: 20.0),
+            buildListTile(
+              icon: Icons.restaurant_rounded,
+              text: 'Delete Healthy Nutrition ',
+              onTap: () {
+                // Navigator.push(context, MaterialPageRoute(builder: (context) => StaffViewPage()));
+              },
+              color: Colors.green.shade900, // Set background color
+            ),
+            SizedBox(height: 20.0),
+            buildListTile(
+              icon: Icons.production_quantity_limits,
+              text: 'Product Review',
+              onTap: () {
+                // Navigator.push(context, MaterialPageRoute(builder: (context) => StaffViewPage()));
               },
               color: Colors.green.shade900, // Set background color
             ),

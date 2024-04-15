@@ -33,14 +33,23 @@ class _AddTipScreenState extends State<AddTipScreen> {
       );
 
       if (response.statusCode == 201) {
+        // Show success Snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Tip added successfully'),
+            backgroundColor: Colors.green, // Set color to green for success
+          ),
+        );
         Navigator.pop(context);
       } else {
         throw Exception('Failed to add tip');
       }
     } catch (e) {
+      // Show failure Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to add tip'),
+          backgroundColor: Colors.red, // Set color to red for failure
         ),
       );
     }

@@ -63,20 +63,6 @@ class TipApiService {
   }
 
 
-  static Future<Tips> uploadAndAddTip(Tips tip, String imagePath) async {
-    var request = http.MultipartRequest('POST', Uri.parse('${ApiConstants.baseUrl}/api/tips/upload'));
-    request.fields['title'] = tip.title;
-    request.fields['description'] = tip.description;
-    request.fields['author'] = tip.author;
-    request.files.add(await http.MultipartFile.fromPath('image', imagePath));
-    var response = await request.send();
-    if (response.statusCode == 201) {
-      final responseJson = await response.stream.bytesToString();
-      return Tips.fromJson(jsonDecode(responseJson));
-    } else {
-      throw Exception('Failed to upload and add tip');
-    }
-  }
 
   static Future<void> addComment(String tipId, String comment) async {
     try {
@@ -97,6 +83,24 @@ class TipApiService {
     } catch (e) {
       print('Failed to add comment: $e');
       // Handle error
+    }
+  }
+
+  Future<Map<String, dynamic>> deleteTip(String tipId) async {
+    final url = Uri.parse('${ApiConstants.baseUrl}/api/tips/deleteTip/$tipId');
+
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        // Handle other status codes
+        return {'success': false, 'message': 'Failed to delete tip'};
+      }
+    } catch (e) {
+      // Handle network errors
+      return {'success': false, 'message': 'Network error: $e'};
     }
   }
 }
