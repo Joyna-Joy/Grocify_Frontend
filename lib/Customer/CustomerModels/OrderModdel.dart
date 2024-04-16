@@ -1,15 +1,17 @@
+import 'package:grocify_frontend/Customer/CustomerModels/ProductModel.dart';
+
 class Order {
-  String id;
-  ShippingInfo shippingInfo;
-  List<OrderItem> orderItems;
-  String userId;
-  PaymentInfo paymentInfo;
-  DateTime paidAt;
-  double totalPrice;
-  String orderStatus;
-  DateTime? deliveredAt;
-  DateTime? shippedAt;
-  DateTime createdAt;
+  final String id;
+  final ShippingInfo shippingInfo;
+  final List<OrderItem> orderItems;
+  final String userId;
+  final PaymentInfo paymentInfo;
+  final DateTime paidAt;
+  final double totalPrice;
+  final String orderStatus;
+  final DateTime? deliveredAt;
+  final DateTime? shippedAt;
+  final DateTime createdAt;
 
   Order({
     required this.id,
@@ -27,34 +29,35 @@ class Order {
 
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
-      id: json['_id'],
-      shippingInfo: ShippingInfo.fromJson(json['shippingInfo']),
-      orderItems: (json['orderItems'] as List)
-          .map((item) => OrderItem.fromJson(item))
-          .toList(),
-      userId: json['user_id'],
-      paymentInfo: PaymentInfo.fromJson(json['paymentInfo']),
-      paidAt: DateTime.parse(json['paidAt']),
-      totalPrice: json['totalPrice'].toDouble(),
-      orderStatus: json['orderStatus'],
+      id: json['id'] ?? '',
+      shippingInfo: ShippingInfo.fromJson(json['shippingInfo'] ?? {}),
+      orderItems: (json['orderItems'] as List<dynamic>?)
+          ?.map((item) => OrderItem.fromJson(item))
+          .toList() ??
+          [],
+      userId: json['user_id'] ?? '',
+      paymentInfo: PaymentInfo.fromJson(json['paymentInfo'] ?? {}),
+      paidAt: DateTime.parse(json['paidAt'] ?? ''),
+      totalPrice: (json['totalPrice'] as num?)?.toDouble() ?? 0,
+      orderStatus: json['orderStatus'] ?? '',
       deliveredAt: json['deliveredAt'] != null
           ? DateTime.parse(json['deliveredAt'])
           : null,
       shippedAt: json['shippedAt'] != null
           ? DateTime.parse(json['shippedAt'])
           : null,
-      createdAt: DateTime.parse(json['createdAt']),
+      createdAt: DateTime.parse(json['createdAt'] ?? ''),
     );
   }
 }
 
 class ShippingInfo {
-  String address;
-  String city;
-  String state;
-  String country;
-  int pincode;
-  int phoneNo;
+  final String address;
+  final String city;
+  final String state;
+  final String country;
+  final int pincode;
+  final int phoneNo;
 
   ShippingInfo({
     required this.address,
@@ -67,45 +70,37 @@ class ShippingInfo {
 
   factory ShippingInfo.fromJson(Map<String, dynamic> json) {
     return ShippingInfo(
-      address: json['address'],
-      city: json['city'],
-      state: json['state'],
-      country: json['country'],
-      pincode: json['pincode'],
-      phoneNo: json['phoneNo'],
+      address: json['address'] ?? '',
+      city: json['city'] ?? '',
+      state: json['state'] ?? '',
+      country: json['country'] ?? '',
+      pincode: json['pincode'] ?? 0,
+      phoneNo: json['phoneNo'] ?? 0,
     );
   }
 }
 
 class OrderItem {
-  String name;
-  double price;
-  int quantity;
-  String image;
-  String productId;
+  final Product product;
+  final int quantity;
 
   OrderItem({
-    required this.name,
-    required this.price,
+    required this.product,
     required this.quantity,
-    required this.image,
-    required this.productId,
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
     return OrderItem(
-      name: json['name'],
-      price: json['price'].toDouble(),
-      quantity: json['quantity'],
-      image: json['image'],
-      productId: json['product_id'],
+      product: Product.fromJson(json['product'] ?? {}), // Update the key to match the JSON structure
+      quantity: json['quantity'] ?? 0,
     );
   }
 }
 
+
 class PaymentInfo {
-  String id;
-  String status;
+  final String id;
+  final String status;
 
   PaymentInfo({
     required this.id,
@@ -114,8 +109,42 @@ class PaymentInfo {
 
   factory PaymentInfo.fromJson(Map<String, dynamic> json) {
     return PaymentInfo(
-      id: json['id'],
-      status: json['status'],
+      id: json['id'] ?? '',
+      status: json['status'] ?? '',
     );
   }
 }
+
+
+
+class Product {
+  final String id;
+  final String productName;
+  final String title;
+  final String images;
+  final String price;
+
+
+  Product({
+    required this.id,
+    required this.productName,
+    required this.title,
+    required this.images,
+    required this.price,
+
+  });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      id: json['_id'],
+      productName: json['product_name'],
+      title: json['title'],
+      images: json['images'],
+      price: json['price'],
+
+    );
+  }
+
+  toJson() {}
+}
+

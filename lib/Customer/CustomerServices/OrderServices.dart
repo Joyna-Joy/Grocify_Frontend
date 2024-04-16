@@ -1,57 +1,125 @@
 import 'dart:convert';
+import 'package:grocify_frontend/Customer/CustomerModels/OrderModdel.dart';
 import 'package:grocify_frontend/api_constants.dart';
 import 'package:http/http.dart' as http;
 
 class OrderService {
 
-  // Create New Order
-  static Future<Map<String, dynamic>> createOrder(Map<String, dynamic> data) async {
-    final response = await http.post(Uri.parse('${ApiConstants.baseUrl}/api/order/new_order'), body: json.encode(data));
-    return json.decode(response.body);
+  // Create a new order
+  static Future<Map<String, dynamic>> createOrder(Map<String, dynamic> orderData) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${ApiConstants.baseUrl}/api/order/new_order'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(orderData),
+      );
+
+      if (response.statusCode == 201) {
+        return {'success': true, 'order': Order.fromJson(jsonDecode(response.body)['order'])};
+      } else {
+        return {'success': false, 'message': 'Failed to create order'};
+      }
+    } catch (e) {
+      print('Error creating order: $e');
+      return {'success': false, 'message': 'Internal server error'};
+    }
   }
 
-  // Get Single Order Details
-  static Future<Map<String, dynamic>> getOrder(String id) async {
-    final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/order/getOrder/$id'));
-    return json.decode(response.body);
+  // Get details of a single order
+  static Future<Map<String, dynamic>> getOrder(String orderId) async {
+    try {
+      final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/order/getOrder/$orderId'));
+
+      if (response.statusCode == 200) {
+        return {'success': true, 'order': Order.fromJson(jsonDecode(response.body)['order'])};
+      } else {
+        return {'success': false, 'message': 'Order not found'};
+      }
+    } catch (e) {
+      print('Error getting order: $e');
+      return {'success': false, 'message': 'Internal server error'};
+    }
   }
 
-  // Get Logged In User Orders
-  static Future<Map<String, dynamic>> getUserOrders() async {
-    final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/order/my_orders'));
-    return json.decode(response.body);
-  }
-
-  // Get All Orders (Admin)
+  // Get all orders (for admin)
   static Future<Map<String, dynamic>> getAllOrders() async {
-    final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/order/all_orders'));
-    return json.decode(response.body);
+    try {
+      final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/order/all_orders'));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+
+        if (data['success'] == true) {
+          List<Order> orders = (data['orders'] as List)
+              .map((orderJson) => Order.fromJson(orderJson))
+              .toList();
+          return {'success': true, 'orders': orders};
+        } else {
+          return {'success': false, 'message': 'Failed to fetch orders'};
+        }
+      } else {
+        return {'success': false, 'message': 'Failed to fetch orders'};
+      }
+    } catch (e) {
+      print('Error getting all orders: $e');
+      return {'success': false, 'message': 'Internal server error'};
+    }
   }
 
-  // Update Order Status (Admin)
-  static Future<Map<String, dynamic>> updateOrderStatus(String id, String status) async {
-    final response = await http.patch(
-      Uri.parse('${ApiConstants.baseUrl}/api/order/updateOrder/$id'),
-      body: json.encode({'status': status}),
-    );
-    return json.decode(response.body);
+  // Update order status (for admin)
+  static Future<Map<String, dynamic>> updateOrderStatus(String orderId, String status) async {
+    try {
+      final response = await http.patch(
+        Uri.parse('${ApiConstants.baseUrl}/api/order/updateOrder/$orderId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'status': status}),
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true, 'order': Order.fromJson(jsonDecode(response.body)['order'])};
+      } else {
+        return {'success': false, 'message': 'Failed to update order status'};
+      }
+    } catch (e) {
+      print('Error updating order status: $e');
+      return {'success': false, 'message': 'Internal server error'};
+    }
   }
 
-  // Delete Order (Admin)
-  static Future<Map<String, dynamic>> deleteOrder(String id) async {
-    final response = await http.delete(Uri.parse('${ApiConstants.baseUrl}/api/order/deleteOrder/$id'));
-    return json.decode(response.body);
+// Cancel order
+  static Future<Map<String, dynamic>> cancelOrder(String orderId) async {
+    try {
+      final response = await http.put(Uri.parse('${ApiConstants.baseUrl}/api/order/cancel_order/$orderId'));
+
+      if (response.statusCode == 200) {
+        return {'success': true};
+      } else {
+        return {'success': false, 'message': 'Failed to cancel order'};
+      }
+    } catch (e) {
+      print('Error canceling order: $e');
+      return {'success': false, 'message': 'Internal server error'};
+    }
   }
 
-  // Cancel Order
-  static Future<Map<String, dynamic>> cancelOrder(String id) async {
-    final response = await http.put(Uri.parse('${ApiConstants.baseUrl}/api/order/cancel_order/$id'));
-    return json.decode(response.body);
+// Return order
+  static Future<Map<String, dynamic>> returnOrder(String orderId) async {
+    try {
+      final response = await http.put(Uri.parse('${ApiConstants.baseUrl}/api/order/return_order/$orderId'));
+
+      if (response.statusCode == 200) {
+        return {'success': true};
+      } else {
+        return {'success': false, 'message': 'Failed to return order'};
+      }
+    } catch (e) {
+      print('Error returning order: $e');
+      return {'success': false, 'message': 'Internal server error'};
+    }
   }
 
-  // Return Order
-  static Future<Map<String, dynamic>> returnOrder(String id) async {
-    final response = await http.put(Uri.parse('${ApiConstants.baseUrl}/api/order/return_order/$id'));
-    return json.decode(response.body);
-  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:grocify_frontend/Admin/AdminPages/AdminLogin.dart';
 import 'package:grocify_frontend/Customer/CustomerPages/Login_Page.dart';
 import 'package:grocify_frontend/Staff/StaffPages/StaffRegistration.dart';
+import 'package:grocify_frontend/Staff/StaffPages/StaffViewOrders.dart';
 
 
 enum Menu { itemOne, itemTwo }
@@ -48,12 +49,10 @@ class _StaffLoginPageState extends State<StaffLoginPage> {
 
     // Simulate a loading process
     Timer(Duration(seconds: 1), () {
-      // Replace this with your login logic
-      // For demonstration, it navigates to the CategoryMenu screen
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => OrderListPage()),
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AllOrdersPage()),
+      );
     });
   }
 
