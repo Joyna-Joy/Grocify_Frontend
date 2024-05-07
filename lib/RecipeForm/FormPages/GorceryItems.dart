@@ -84,7 +84,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
             SizedBox(
               width: 10,
             ),
-            Text('Shoping List',style: TextStyle(color:Colors.white),),
+            Text('Shopping List',style: TextStyle(color:Colors.white),),
           ],
         ),
         leading: IconButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => WelcomePage()));}, icon:Icon(Icons.arrow_back_ios_new,color:Colors.white,)),

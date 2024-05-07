@@ -291,7 +291,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   final bool categoryExists = await validateCategory(selectedCategory!.id);
                   if (!categoryExists) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Selected category does not exist')),
+                      SnackBar(content: Text('Product added successfully')),
                     );
                     return;
                   } else {

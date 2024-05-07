@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:grocify_frontend/Customer/CustomerModels/UserModel.dart';
 import 'package:grocify_frontend/api_constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -71,11 +72,17 @@ class UserService {
     }
   }
 
-  Future<List<dynamic>> getAllUsers() async {
-    final url = Uri.parse('${ApiConstants.baseUrl}/api/user/getAllUsers');
-    final response = await http.get(url);
-    return jsonDecode(response.body)['users'];
+  static Future<List<User>> fetchAllUsers() async {
+  final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/user/viewallusers'));
+  if (response.statusCode == 200) {
+  List<dynamic> jsonResponse = jsonDecode(response.body);
+  List<User> users = jsonResponse.map((userJson) => User.fromJson(userJson)).toList();
+  return users;
+  } else {
+  throw Exception('Failed to load users');
   }
+  }
+
 
   Future<Map<String, dynamic>> getSingleUser(String userId) async {
     final url = Uri.parse('${ApiConstants.baseUrl}/api/user/getSingleUser/$userId');

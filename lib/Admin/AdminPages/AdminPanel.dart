@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:grocify_frontend/Admin/AdminPages/AddProduct.dart';
+import 'package:grocify_frontend/Admin/AdminPages/DeleteNutrition.dart';
+import 'package:grocify_frontend/Admin/AdminPages/DeleteProductReview.dart';
 import 'package:grocify_frontend/Admin/AdminPages/DeleteTips.dart';
 import 'package:grocify_frontend/Admin/AdminPages/ViewCategory.dart';
 import 'package:grocify_frontend/Admin/AdminPages/CategoryAdd.dart';
 import 'package:grocify_frontend/Admin/AdminPages/ViewProductPage.dart';
 import 'package:grocify_frontend/Admin/AdminPages/ViewStaff.dart';
+import 'package:grocify_frontend/Admin/AdminPages/ViewUser.dart';
 
 class AdminScreen extends StatelessWidget {
   var productId;
@@ -99,6 +102,16 @@ class AdminScreen extends StatelessWidget {
             ),
             SizedBox(height: 20.0),
             buildCard(
+              icon: Icons.person,
+              text: 'View User',
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => UserListView()));
+              },
+              color: Colors.redAccent.shade400, // Set background color
+            ),
+
+            SizedBox(height: 20.0),
+            buildCard(
               icon: Icons.tips_and_updates,
               text: 'Delete Tips & Tricks ',
               onTap: () {
@@ -111,7 +124,7 @@ class AdminScreen extends StatelessWidget {
               icon: Icons.restaurant_rounded,
               text: 'Delete Healthy Nutrition ',
               onTap: () {
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => StaffViewPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => NutritionDeletePage()));
               },
               color: Color(0xffdcbf09), // Set background color
             ),
@@ -120,7 +133,7 @@ class AdminScreen extends StatelessWidget {
               icon: Icons.production_quantity_limits,
               text: 'Product Review',
               onTap: () {
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => StaffViewPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => RecipeProductDeletePage()));
               },
               color: Color(0xffd91193), // Set background color
             ),

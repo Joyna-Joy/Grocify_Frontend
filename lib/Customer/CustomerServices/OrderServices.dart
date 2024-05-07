@@ -44,27 +44,25 @@ class OrderService {
   }
 
   // Get all orders (for admin)
-  static Future<Map<String, dynamic>> getAllOrders() async {
+  static Future<List<Order>> fetchAllOrders() async {
     try {
       final response = await http.get(Uri.parse('${ApiConstants.baseUrl}/api/order/all_orders'));
-
+      print('Response Body: ${response.body}'); // Print response body
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-
-        if (data['success'] == true) {
-          List<Order> orders = (data['orders'] as List)
-              .map((orderJson) => Order.fromJson(orderJson))
-              .toList();
-          return {'success': true, 'orders': orders};
+        final jsonResponse = jsonDecode(response.body);
+        print('Parsed JSON: $jsonResponse'); // Print parsed JSON
+        if (jsonResponse['success'] == true) {
+          final ordersJson = jsonResponse['orders']; // Accessing the 'orders' key
+          List<Order> orders = ordersJson.map<Order>((orderJson) => Order.fromJson(orderJson)).toList();
+          return orders;
         } else {
-          return {'success': false, 'message': 'Failed to fetch orders'};
+          throw Exception('Failed to load orders: ${response.statusCode}');
         }
       } else {
-        return {'success': false, 'message': 'Failed to fetch orders'};
+        throw Exception('Failed to load orders: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error getting all orders: $e');
-      return {'success': false, 'message': 'Internal server error'};
+      throw Exception('Failed to fetch orders: $e');
     }
   }
 

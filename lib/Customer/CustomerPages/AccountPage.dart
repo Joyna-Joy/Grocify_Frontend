@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 class AppColors {
   //One instance, needs factory
   static AppColors? _instance;
@@ -23,27 +24,12 @@ class AccountScreen extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              ListTile(
-                leading:
-                SizedBox(width: 65, height: 65, child: getImageHeader()),
-                title: AppText(
-                  text: "Joyna Joy",
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-                subtitle: AppText(
-                  text: "github.com/Joyna-Joy",
-                  color: Color(0xff7C7C7C),
-                  fontWeight: FontWeight.normal,
-                  fontSize: 16,
-                ),
-              ),
               Column(
-                children: getChildrenWithSeperator(
+                children: getChildrenWithSeparator(
                   widgets: accountItems.map((e) {
-                    return getAccountItemWidget(e);
+                    return getAccountItemWidget(e, context);
                   }).toList(),
-                  seperator: Divider(
+                  separator: Divider(
                     thickness: 1,
                   ),
                 ),
@@ -115,34 +101,84 @@ class AccountScreen extends StatelessWidget {
     );
   }
 
-  Widget getAccountItemWidget(AccountItem accountItem) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 15),
-      padding: EdgeInsets.symmetric(horizontal: 25),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 20,
-            height: 20,
-            child: SvgPicture.asset(
-              accountItem.iconPath,
+  Widget getAccountItemWidget(AccountItem accountItem, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (accountItem.label == "Help") {
+          showHelpDialog(context);
+        } else if (accountItem.label == "About") {
+          showAboutDialog(context);
+        }
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 15),
+        padding: EdgeInsets.symmetric(horizontal: 25),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: SvgPicture.asset(
+                accountItem.iconPath,
+              ),
             ),
-          ),
-          SizedBox(
-            width: 20,
-          ),
-          Text(
-            accountItem.label,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Spacer(),
-          Icon(Icons.arrow_forward_ios)
-        ],
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              accountItem.label,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Spacer(),
+            Icon(Icons.arrow_forward_ios)
+          ],
+        ),
       ),
     );
   }
-}
 
+  void showHelpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("FAQs"),
+          content: Text(
+              "Kindly check the FAQ below if you are not very familiar with the functioning of this website. If your query is of urgent nature and is different from the set of questions then please contact us at:\n\nEmail: customerservice@grocify.com"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Close"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showAboutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("About"),
+          content: Text(
+              "Kindly check the FAQ below if you are not very familiar with the functioning of this website. If your query is of urgent nature and is different from the set of questions then please contact us at:\n\nEmail: customerservice@grocify.com"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Close"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
 
 class AppText extends StatelessWidget {
   final String text;
@@ -186,34 +222,33 @@ List<AccountItem> accountItems = [
   AccountItem("My Details", "assets/icons/account_icons/details_icon.svg"),
   AccountItem(
       "Delivery Access", "assets/icons/account_icons/delivery_icon.svg"),
-  AccountItem("Payment Methods", "assets/icons/account_icons/payment_icon.svg"),
   AccountItem("Promo Card", "assets/icons/account_icons/promo_icon.svg"),
   AccountItem(
       "Notifications", "assets/icons/account_icons/notification_icon.svg"),
-  AccountItem("Help", "assets/icons/account_icons/help_icon.svg"),
+  AccountItem("FAQs", "assets/icons/account_icons/help_icon.svg"),
   AccountItem("About", "assets/icons/account_icons/about_icon.svg"),
 ];
 
-List<Widget> getChildrenWithSeperator(
-    {required List<Widget> widgets,
-      required Widget seperator,
-      bool addToLastChild = true}) {
+List<Widget> getChildrenWithSeparator({
+  required List<Widget> widgets,
+  required Widget separator,
+  bool addToLastChild = true,
+}) {
   List<Widget> children = [];
   if (widgets.length > 0) {
-    children.add(seperator);
+    children.add(separator);
 
     for (int i = 0; i < widgets.length; i++) {
       children.add(widgets[i]);
 
       if (widgets.length - i == 1) {
         if (addToLastChild) {
-          children.add(seperator);
+          children.add(separator);
         }
       } else {
-        children.add(seperator);
+        children.add(separator);
       }
     }
   }
   return children;
 }
-

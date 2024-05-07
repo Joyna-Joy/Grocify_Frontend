@@ -30,6 +30,7 @@ class _AddNutritionScreenState extends State<AddNutritionScreen> {
 
     if (title.isNotEmpty && content.isNotEmpty && imageUrl.isNotEmpty && calories > 0 && protein > 0 && carbohydrates > 0 && fat > 0 && fiber > 0) {
       final Nutrition newNutritionEntry = Nutrition(
+        id: '',
         title: title,
         content: content,
         imageUrl: imageUrl,
@@ -44,48 +45,35 @@ class _AddNutritionScreenState extends State<AddNutritionScreen> {
 
       NutritionService.addNutrition(newNutritionEntry)
           .then((_) {
+        // Show success Snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Nutrition added successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
         Navigator.pop(context);
       })
           .catchError((error) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text('Failed to add nutrition entry: $error'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
+        // Show error Snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add nutrition entry: $error'),
+            backgroundColor: Colors.red,
+          ),
         );
       });
     } else {
-      // Show error message if any field is empty or invalid
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Please fill all fields with valid data.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
+      // Show error Snackbar for invalid or empty fields
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fill all fields with valid data.'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

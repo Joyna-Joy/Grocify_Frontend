@@ -82,4 +82,22 @@ class RecipeProductService {
       throw Exception('Failed to upload image for product');
     }
   }
+
+  Future<Map<String, dynamic>> deleteRecipeProduct(String recipeproductId) async {
+    final url = Uri.parse('${ApiConstants.baseUrl}/api/recipeProducts/deleteProduct/$recipeproductId');
+
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        // Handle other status codes
+        return {'success': false, 'message': 'Failed to delete nutrition'};
+      }
+    } catch (e) {
+      // Handle network errors
+      return {'success': false, 'message': 'Network error: $e'};
+    }
+  }
 }
