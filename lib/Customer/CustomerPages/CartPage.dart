@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:grocify_frontend/Admin/AdminModel/AdminModel.dart';
-import 'package:grocify_frontend/Customer/CustomerModels/ProductModel.dart';
 
 class CartPage extends StatefulWidget {
   final AdminProduct product;
@@ -61,9 +60,38 @@ class _CartPageState extends State<CartPage> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Place order logic goes here
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Order placed successfully')),
+                showModalBottomSheet<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Your Order is Placed Successfully',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 20),
+                          Image.asset(
+                            'assets/OrderGif.gif', // Replace 'assets/order_placed_image.png' with your image asset path
+                            width: 200,
+                            height: 200,
+                          ),
+                          SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context); // Close the bottom sheet
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text('OK'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 );
               },
               child: Padding(
@@ -71,6 +99,7 @@ class _CartPageState extends State<CartPage> {
                 child: Text('Place Order'),
               ),
             ),
+
           ],
         ),
       ),

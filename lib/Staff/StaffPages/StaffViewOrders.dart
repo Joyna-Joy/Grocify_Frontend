@@ -9,12 +9,12 @@ class AllOrdersPage extends StatefulWidget {
 }
 
 class _AllOrdersPageState extends State<AllOrdersPage> {
-  late Future<Map<String, dynamic>?> _ordersFuture;
+  late Future<List<Order>> _ordersFuture;
 
   @override
   void initState() {
     super.initState();
-    _ordersFuture = OrderService.getAllOrders();
+    _ordersFuture = OrderService.fetchAllOrders();
   }
 
   @override
@@ -48,11 +48,11 @@ class _AllOrdersPageState extends State<AllOrdersPage> {
           ],
         ),
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<List<Order>>(
         future: _ordersFuture,
-        builder: (context, AsyncSnapshot<Map<String, dynamic>?> snapshot) {
+        builder: (context, AsyncSnapshot<List<Order>> snapshot) {
           if (snapshot.hasData) {
-            final Map<String, dynamic>? data = snapshot.data;
+            final Map<String, dynamic>? data = snapshot.data as Map<String, dynamic>?;
 
             if (data != null) {
               if (data['success'] == true) {

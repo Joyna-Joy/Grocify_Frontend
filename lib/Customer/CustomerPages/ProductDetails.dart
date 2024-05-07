@@ -59,9 +59,11 @@ class ProductScreen extends StatelessWidget {
       return double.parse(product.price);
     } else {
       double discountValue = product.discounts.first.value;
-      return double.parse(product.price) - (double.parse(product.price) * (discountValue / 100));
+      double discountedPrice = double.parse(product.price) - (double.parse(product.price) * (discountValue / 100));
+      return discountedPrice.roundToDouble(); // Round to the nearest integer
     }
   }
+
 
   void addToCart(BuildContext context, AdminProduct product) {
     showModalBottomSheet<void>(
@@ -127,11 +129,32 @@ class ProductScreen extends StatelessWidget {
   }
 
   void addToCartAction(BuildContext context, AdminProduct product, int quantity) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => CartPage(product: product, quantity: quantity)),
-    );
+    if (quantity <= product.stock) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => CartPage(product: product, quantity: quantity)),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('The selected quantity exceeds the available stock (${product.stock}).'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -214,8 +237,8 @@ class ProductScreen extends StatelessWidget {
                                           Text('Description',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
                                           SizedBox(height: 5),
                                           Text(' ${product.description}'),
-                                          SizedBox(height: 10),
-                                          Text('Stock: ${product.stock}',style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
+                                          // SizedBox(height: 10),
+                                          // Text('Stock: ${product.stock}',style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
                                         ],
                                       ),
                                       actions: [

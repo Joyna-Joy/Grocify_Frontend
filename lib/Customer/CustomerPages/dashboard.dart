@@ -62,7 +62,7 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text('Account Page'),
+      child: Image.network('https://th.bing.com/th/id/OIP.r6aijQ7gtefVW3pa7N_t7AHaFQ?w=232&h=180&c=7&r=0&o=5&dpr=1.4&pid=1.7'), // Replace the URL with your GIF's URL
     );
   }
 }

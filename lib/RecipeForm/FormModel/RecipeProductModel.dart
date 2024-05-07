@@ -9,13 +9,13 @@ List<Recipeproduct> recipeproductFromJson(String str) => List<Recipeproduct>.fro
 String recipeproductToJson(List<Recipeproduct> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Recipeproduct {
-  String id;
-  String name;
-  String description;
-  int price; // Change the data type to int
-  String category;
-  String imageUrl;
-  List<String> comments; // Add this line
+  final String id;
+  final String name;
+  final String description;
+  final int price; // Change the data type to int
+  final String category;
+  final String imageUrl;
+   List<String> comments; // Add this line
 
 
   Recipeproduct({

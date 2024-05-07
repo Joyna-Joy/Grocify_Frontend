@@ -39,7 +39,6 @@ class _NutritionScreenState extends State<NutritionScreen> {
             controller: _searchController,
             decoration: InputDecoration(
               hintText: 'Search',
-
               border: InputBorder.none,
             ),
             onChanged: (value) {
